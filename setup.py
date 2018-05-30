@@ -17,7 +17,7 @@ VERSION = '0.0.1'
 
 # What packages are required for this module to be executed?
 REQUIRED = [
-    'pywinrm', 'sshtunnel', 'pysmb'
+    'pywinrm', 'sshtunnel', 'pysmb', 'pyopenssl'
 
 ]
 
