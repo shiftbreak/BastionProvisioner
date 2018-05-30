@@ -21,15 +21,19 @@ atexit.register(killserver)
 def main():
     global server
     parser = argparse.ArgumentParser()
-    parser.add_argument("key", help="SSH Private Key")
+
     parser.add_argument("target", help="Target Windows Host")
     parser.add_argument("bastion", help="Bastion host IP")
+    parser.add_argument('-u', '--ssh_username', help="SSH target username", default="ubuntu")
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument('-p', '--ssh_password', help="SSH target password")
+    group.add_argument('-k', '--ssh_key', help="SSH Private Key")
     parser.add_argument("username", help="Windows Username")
     parser.add_argument("password", help="Windows Password")
 
-    subparsers = parser.add_subparsers(help='SMB or WinRM', dest="module")
-    winrm_parser = subparsers.add_parser("winrm", help="WinRM PowerShell Command")
-    smb_parser = subparsers.add_parser("smb", help="SMB File Transfer")
+    subparsers = parser.add_subparsers(help='exec or upload', dest="module")
+    winrm_parser = subparsers.add_parser("exec", help="WinRM PowerShell Command")
+    smb_parser = subparsers.add_parser("upload", help="SMB File Transfer")
 
     winrm_parser.add_argument("command", help="PowerShell Command to Execute")
     smb_parser.add_argument("local", help="Local file to copy")
@@ -39,9 +43,9 @@ def main():
     args = parser.parse_args()
 
     # shared arguments
-    private_key = args.key
     windows_host = args.target
     jumphost = args.bastion
+    ssh_username = args.ssh_username
     windows_user = args.username
     windows_password = args.password
 
@@ -51,22 +55,32 @@ def main():
     winrm_cmd = None
 
     # module specific arguments
-    if args.module == "winrm":
+    if args.module == "exec":
         winrm_cmd = args.command
         rport = 5985
-    if args.module == "smb":
+    if args.module == "upload":
         local_file_name = args.local
         remote_file_name = args.remote
         share = args.share
         rport = 445
 
     # start SSH tunnel
-    server = SSHTunnelForwarder(
-        jumphost,
-        ssh_username="ubuntu",
-        ssh_pkey=private_key,
-        remote_bind_address=(windows_host, rport),
-    )
+    if args.ssh_key:
+        private_key = args.ssh_key
+        server = SSHTunnelForwarder(
+            jumphost,
+            ssh_username=ssh_username,
+            ssh_pkey=private_key,
+            remote_bind_address=(windows_host, rport),
+        )
+    else:
+        password = args.ssh_password
+        server = SSHTunnelForwarder(
+            jumphost,
+            ssh_username=ssh_username,
+            ssh_password=password,
+            remote_bind_address=(windows_host, rport),
+        )
 
     server.start()
     lport = server.local_bind_port

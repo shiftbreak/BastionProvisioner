@@ -7,12 +7,12 @@ import io
 
 # Package meta-data.
 
-NAME = 'BastionProvisioner'
-DESCRIPTION = 'A provisioner for SMB and WinRM via an SSH tunnel.'
-URL = 'https://github.com/shiftbreak/BastionProvisioner'
-EMAIL = 'github@ranulf.green'
+NAME = 'WinTunnel'
+DESCRIPTION = 'A tool for SMB file upload and WinRM command execution via an SSH tunnel.'
+URL = 'https://github.com/shiftbreak/WinTunnel'
+EMAIL = 'code@ranulf.green'
 AUTHOR = 'Ranulf Green'
-VERSION = '1.0.0'
+VERSION = '0.0.1'
 
 
 # What packages are required for this module to be executed?
@@ -115,7 +115,7 @@ setup(
     dependency_links = ['https://github.com/diyan/pywinrm/tarball/master#egg=pywinrm-0.3.0'],
     entry_points={
       'console_scripts': [
-          'bastionprovision = bastionprovision.main:main'
+          'wintunnel = wintunnel.main:main'
       ]
     },
 

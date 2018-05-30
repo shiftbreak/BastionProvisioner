@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 from smb.SMBConnection import SMBConnection
 
 import os
