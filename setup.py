@@ -10,8 +10,8 @@ import io
 NAME = 'WinTunnel'
 DESCRIPTION = 'A tool for SMB file upload and WinRM command execution via an SSH tunnel.'
 URL = 'https://github.com/shiftbreak/WinTunnel'
-EMAIL = 'code@ranulf.green'
-AUTHOR = 'Ranulf Green'
+EMAIL = 'shiftbreak.code@gmail.com'
+AUTHOR = 'ShiftBreak'
 VERSION = '0.0.2'
 
 
