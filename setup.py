@@ -12,7 +12,7 @@ DESCRIPTION = 'A tool for SMB file upload and WinRM command execution via an SSH
 URL = 'https://github.com/shiftbreak/WinTunnel'
 EMAIL = 'shiftbreak.code@gmail.com'
 AUTHOR = 'ShiftBreak'
-VERSION = '0.0.6'
+VERSION = '0.0.8'
 
 
 # What packages are required for this module to be executed?

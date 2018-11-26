@@ -3,7 +3,9 @@ from time import sleep
 from smb_tunnel import do_smb
 from winrm_tunnel import do_winrm
 from requests.exceptions import ConnectionError
+from winrm.exceptions import WinRMOperationTimeoutError
 from smb.base import NotConnectedError
+from smb.smb_structs import OperationFailure
 import atexit
 import socket
 import signal
@@ -106,7 +108,7 @@ def main():
         while not o:
           try:
             do_winrm(lport, windows_user, windows_password, winrm_cmd)
-          except ConnectionError:
+          except (WinRMOperationTimeoutError, ConnectionError) as e:
             sleep(2)
             continue
           o = True
@@ -116,7 +118,7 @@ def main():
         while not o:
           try:
             do_smb(lport, windows_user, windows_password, local_file_name, remote_file_name, share)
-          except NotConnectedError:
+          except (OperationFailure, NotConnectedError) as e:
             sleep(2)
             continue
           o = True
