@@ -1,7 +1,15 @@
 import argparse
+from time import sleep
 from smb_tunnel import do_smb
 from winrm_tunnel import do_winrm
+from requests.exceptions import ConnectionError
+from smb.base import NotConnectedError
 import atexit
+import socket
+import signal
+import sys
+
+
 
 # python SSH
 from sshtunnel import SSHTunnelForwarder
@@ -14,7 +22,12 @@ def killserver():
     if server:
         server.stop()
 
-
+def signal_handler(sig, frame):                                                                                                                                                                                  
+  print ('Ctrl-C detected - exciting')                                                                                                                                                                           
+  killserver()                                                                                                                                                                                                   
+  sys.exit(0)                                                                                                                                                                                                    
+                 
+signal.signal(signal.SIGINT, signal_handler)
 atexit.register(killserver)
 
 
@@ -30,6 +43,7 @@ def main():
     group.add_argument('-k', '--ssh_key', help="SSH Private Key")
     parser.add_argument("username", help="Windows Username")
     parser.add_argument("password", help="Windows Password")
+    parser.add_argument('-w', "--wait", action="store_true", help="Wait for connection to open before executing command", required=False)
 
     subparsers = parser.add_subparsers(help='exec or upload', dest="module")
     winrm_parser = subparsers.add_parser("exec", help="WinRM PowerShell Command")
@@ -87,9 +101,25 @@ def main():
 
     # run the module
     if args.module == "exec":
-        do_winrm(lport, windows_user, windows_password, winrm_cmd)
+      if args.wait:
+        o = False
+        while not o:
+          try:
+            do_winrm(lport, windows_user, windows_password, winrm_cmd)
+          except ConnectionError:
+            sleep(2)
+            continue
+          o = True
     if args.module == "upload":
-        do_smb(lport, windows_user, windows_password, local_file_name, remote_file_name, share)
+      if args.wait:
+        o = False
+        while not o:
+          try:
+            do_smb(lport, windows_user, windows_password, local_file_name, remote_file_name, share)
+          except NotConnectedError:
+            sleep(2)
+            continue
+          o = True
 
 
     killserver()
