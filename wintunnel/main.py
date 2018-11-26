@@ -86,9 +86,9 @@ def main():
     lport = server.local_bind_port
 
     # run the module
-    if args.module == "winrm":
+    if args.module == "exec":
         do_winrm(lport, windows_user, windows_password, winrm_cmd)
-    if args.module == "smb":
+    if args.module == "upload":
         do_smb(lport, windows_user, windows_password, local_file_name, remote_file_name, share)
 
 
