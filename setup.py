@@ -12,7 +12,7 @@ DESCRIPTION = 'A tool for SMB file upload and WinRM command execution via an SSH
 URL = 'https://github.com/shiftbreak/WinTunnel'
 EMAIL = 'shiftbreak.code@gmail.com'
 AUTHOR = 'ShiftBreak'
-VERSION = '0.0.2'
+VERSION = '0.0.5'
 
 
 # What packages are required for this module to be executed?
@@ -28,7 +28,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 
 # Import the README and use it as the long-description.
 # Note: this will only work if 'README.md' is present in your MANIFEST.in file!
-with io.open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
+with io.open(os.path.join(here, 'README'), encoding='utf-8') as f:
     long_description = '\n' + f.read()
 
 # Load the package's __version__.py module as a dictionary.
